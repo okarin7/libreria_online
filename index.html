@@ -4,10 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Librerías Andinas | Libros, útiles y más</title>
+
+<!-- Estilos oficiales del chat de n8n -->
+<link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+
 <style>
   :root{
     --rojo:#B71C1C; --rojo2:#8E1414; --dorado:#E0A526; --crema:#FFF8EC;
     --texto:#2B2B2B; --gris:#6B6B6B; --verde:#25D366;
+
+    /* Colores del chat n8n */
+    --chat--color-primary:#B71C1C;
+    --chat--color-primary-shade-50:#8E1414;
+    --chat--color-secondary:#E0A526;
+    --chat--header--background:#E0A526;
+    --chat--header--color:#3b2600;
+    --chat--message--user--background:#B71C1C;
+    --chat--message--user--color:#fff;
+    --chat--border-radius:0;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:"Segoe UI",Roboto,Arial,sans-serif;color:var(--texto);background:#fff;line-height:1.6}
@@ -50,7 +64,7 @@
   .contacto-box .card{text-align:left}
   footer{background:#1f1f1f;color:#bbb;text-align:center;padding:26px 0;font-size:.9rem}
 
-  /* ===== CHATBOT FAQ ===== */
+  /* ===== Paneles de chat ===== */
   #chat-toggle{position:fixed;right:24px;bottom:24px;width:64px;height:64px;border-radius:50%;background:var(--rojo);color:#fff;font-size:1.8rem;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:100}
   #chat-toggle .badge{position:absolute;top:4px;right:4px;width:14px;height:14px;background:var(--dorado);border-radius:50%;border:2px solid #fff}
   .panel{position:fixed;right:24px;bottom:100px;width:380px;max-width:calc(100% - 32px);height:560px;max-height:calc(100vh - 200px);background:#fff;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.25);display:none;flex-direction:column;overflow:hidden;z-index:101}
@@ -75,16 +89,16 @@
   .chat-input input{flex:1;border:none;padding:14px;font-size:.93rem;outline:none}
   .chat-input button{background:var(--rojo);color:#fff;border:none;padding:0 18px;cursor:pointer;font-size:1.1rem}
 
-  /* ===== CHATBOT IA (n8n) ===== */
+  /* ===== Asistente IA (n8n) ===== */
   #n8n-toggle{position:fixed;right:24px;bottom:100px;width:64px;height:64px;border-radius:50%;background:var(--dorado);font-size:2rem;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:100;animation:flotar 2.5s ease-in-out infinite}
   #n8n-toggle .tip{position:absolute;right:74px;top:50%;transform:translateY(-50%);background:#2B2B2B;color:#fff;font-size:.8rem;padding:6px 10px;border-radius:8px;white-space:nowrap;font-weight:600}
   @keyframes flotar{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-  #n8n-chat{bottom:176px}
-  #n8n-chat iframe{flex:1;border:none;width:100%}
+  #n8n-panel{bottom:176px}
   .n8n-head{background:var(--dorado);color:#3b2600}
   .n8n-head .av{background:#fff}
-  .n8n-head a{font-size:.75rem;text-decoration:underline;margin-left:auto}
-  .n8n-head .cerrar{margin-left:8px}
+  #n8n-chat{flex:1;min-height:0;position:relative}
+  #n8n-chat .chat-layout{height:100%}
+  #n8n-chat .chat-header{display:none}   /* usamos nuestra propia cabecera con 🤖 */
 
   @media(max-width:700px){nav ul{display:none}.btn-blanco{margin:10px 0 0}}
 </style>
@@ -154,17 +168,16 @@
 
 <footer>© <span id="anio"></span> Librerías Andinas · Lima, Perú</footer>
 
-<!-- ===== CHATBOT IA (n8n) ===== -->
+<!-- ===== ASISTENTE IA (n8n) ===== -->
 <button id="n8n-toggle" onclick="toggleN8n()" aria-label="Abrir asistente IA">🤖<span class="tip">¡Pregúntale a la IA!</span></button>
 
-<div id="n8n-chat" class="panel">
+<div id="n8n-panel" class="panel">
   <div class="chat-head n8n-head">
     <div class="av">🤖</div>
-    <div><b>Asistente IA</b><small>Librerías Andinas</small></div>
-    <a href="https://angelunmsm.app.n8n.cloud/webhook/a75449dc-2edc-48a0-9fc7-92820e3c18a4/chat" target="_blank" rel="noopener noreferrer">Abrir aparte ↗</a>
+    <div><b>Asistente IA</b><small>Librerías Andinas · En línea</small></div>
     <button class="cerrar" onclick="toggleN8n()" aria-label="Cerrar">×</button>
   </div>
-  <iframe id="n8n-frame" title="Asistente IA Librerías Andinas" data-src="https://angelunmsm.app.n8n.cloud/webhook/a75449dc-2edc-48a0-9fc7-92820e3c18a4/chat"></iframe>
+  <div id="n8n-chat"></div>
 </div>
 
 <!-- ===== CHATBOT FAQ ===== -->
@@ -183,12 +196,37 @@
   </form>
 </div>
 
+<!-- Widget oficial de n8n (se conecta por API, no por iframe) -->
+<script type="module">
+  import { createChat } from "https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js";
+  createChat({
+    webhookUrl: "https://angelunmsm.app.n8n.cloud/webhook/a75449dc-2edc-48a0-9fc7-92820e3c18a4/chat",
+    target: "#n8n-chat",
+    mode: "fullscreen",
+    showWelcomeScreen: false,
+    loadPreviousSession: true,
+    defaultLanguage: "en",
+    initialMessages: [
+      "¡Hola! 🤖 Soy el Asistente IA de Librerías Andinas.",
+      "¿Qué libro o producto estás buscando?"
+    ],
+    i18n: {
+      en: {
+        title: "Asistente IA",
+        subtitle: "Librerías Andinas",
+        footer: "",
+        getStarted: "Nueva conversación",
+        inputPlaceholder: "Escribe tu pregunta...",
+        closeButtonTooltip: "Cerrar"
+      }
+    }
+  });
+</script>
+
 <script>
-/* ============ CONFIGURACIÓN ============ */
 const WHATSAPP = "51948548368";
 const CORREO   = "angeljesus.unmsm@gmail.com";
 
-/* ============ 10 PREGUNTAS BÁSICAS ============ */
 const FAQ = [
   { q:"🕘 Horario de atención", k:["horario","hora","abren","cierran","atienden"],
     a:"Atendemos de lunes a sábado de 9:00 a.m. a 8:00 p.m. y domingos de 10:00 a.m. a 2:00 p.m." },
@@ -215,9 +253,8 @@ const FAQ = [
 const msgs = document.getElementById("mensajes");
 let iniciado = false;
 
-/* ---------- Abrir/cerrar paneles (solo uno a la vez) ---------- */
 function toggleChat(){
-  document.getElementById("n8n-chat").classList.remove("abierto");
+  document.getElementById("n8n-panel").classList.remove("abierto");
   document.getElementById("chat").classList.toggle("abierto");
   document.querySelector("#chat-toggle .badge")?.remove();
   if(!iniciado){ iniciado = true; bienvenida(); }
@@ -225,15 +262,12 @@ function toggleChat(){
 function abrirChat(){ if(!document.getElementById("chat").classList.contains("abierto")) toggleChat(); }
 
 function toggleN8n(){
-  const f = document.getElementById("n8n-frame");
-  if(!f.src) f.src = f.dataset.src;   // carga el chat de n8n solo al abrirlo
   document.getElementById("chat").classList.remove("abierto");
-  document.getElementById("n8n-chat").classList.toggle("abierto");
+  document.getElementById("n8n-panel").classList.toggle("abierto");
   document.querySelector("#n8n-toggle .tip")?.remove();
 }
-function abrirN8n(){ if(!document.getElementById("n8n-chat").classList.contains("abierto")) toggleN8n(); }
+function abrirN8n(){ if(!document.getElementById("n8n-panel").classList.contains("abierto")) toggleN8n(); }
 
-/* ---------- Chatbot FAQ ---------- */
 function agregar(texto, tipo="bot"){
   const d = document.createElement("div");
   d.className = "msg " + tipo;
@@ -290,7 +324,6 @@ function enviarTexto(e){
   else { botDice("No tengo esa respuesta, pero nuestro 🤖 Asistente IA o un asesor pueden ayudarte.", mostrarOpciones); }
 }
 
-/* ---------- Formulario → WhatsApp + Correo ---------- */
 function pedirDatos(consultaPrevia=""){
   const f = document.createElement("form");
   f.className = "form-lead";
