@@ -14,7 +14,6 @@
   a{color:inherit;text-decoration:none}
   .container{width:min(1100px,92%);margin:auto}
 
-  /* Header */
   header{background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06);position:sticky;top:0;z-index:50}
   .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
   .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.3rem;color:var(--rojo)}
@@ -23,7 +22,6 @@
   nav a{font-weight:600;color:var(--gris)}
   nav a:hover{color:var(--rojo)}
 
-  /* Hero */
   .hero{background:linear-gradient(135deg,var(--rojo) 0%,var(--rojo2) 100%);color:#fff;padding:80px 0;position:relative;overflow:hidden}
   .hero::after{content:"";position:absolute;right:-80px;bottom:-80px;width:320px;height:320px;border-radius:50%;background:rgba(224,165,38,.25)}
   .hero h1{font-size:clamp(2rem,4vw,3rem);line-height:1.2;max-width:640px}
@@ -33,7 +31,6 @@
   .btn-dorado{background:var(--dorado);color:#3b2600}
   .btn-blanco{background:#fff;color:var(--rojo);margin-left:10px}
 
-  /* Secciones */
   section{padding:70px 0}
   .titulo{text-align:center;margin-bottom:40px}
   .titulo h2{font-size:2rem;color:var(--rojo)}
@@ -53,15 +50,15 @@
   .contacto-box .card{text-align:left}
   footer{background:#1f1f1f;color:#bbb;text-align:center;padding:26px 0;font-size:.9rem}
 
-  /* ===== CHATBOT ===== */
+  /* ===== CHATBOT FAQ ===== */
   #chat-toggle{position:fixed;right:24px;bottom:24px;width:64px;height:64px;border-radius:50%;background:var(--rojo);color:#fff;font-size:1.8rem;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:100}
   #chat-toggle .badge{position:absolute;top:4px;right:4px;width:14px;height:14px;background:var(--dorado);border-radius:50%;border:2px solid #fff}
-  #chat{position:fixed;right:24px;bottom:100px;width:370px;max-width:calc(100% - 32px);height:560px;max-height:calc(100vh - 130px);background:#fff;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.25);display:none;flex-direction:column;overflow:hidden;z-index:100}
-  #chat.abierto{display:flex}
+  .panel{position:fixed;right:24px;bottom:100px;width:380px;max-width:calc(100% - 32px);height:560px;max-height:calc(100vh - 200px);background:#fff;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.25);display:none;flex-direction:column;overflow:hidden;z-index:101}
+  .panel.abierto{display:flex}
   .chat-head{background:var(--rojo);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px}
   .chat-head .av{width:40px;height:40px;border-radius:50%;background:var(--dorado);display:grid;place-items:center;font-size:1.3rem}
   .chat-head small{display:block;opacity:.85;font-size:.78rem}
-  .chat-head button{margin-left:auto;background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer}
+  .chat-head .cerrar{margin-left:auto;background:none;border:none;color:inherit;font-size:1.4rem;cursor:pointer}
   #mensajes{flex:1;overflow-y:auto;padding:14px;background:#f6f3ee;display:flex;flex-direction:column;gap:10px}
   .msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:.92rem;white-space:pre-line}
   .bot{background:#fff;align-self:flex-start;border-bottom-left-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
@@ -77,6 +74,17 @@
   .chat-input{display:flex;border-top:1px solid #eee}
   .chat-input input{flex:1;border:none;padding:14px;font-size:.93rem;outline:none}
   .chat-input button{background:var(--rojo);color:#fff;border:none;padding:0 18px;cursor:pointer;font-size:1.1rem}
+
+  /* ===== CHATBOT IA (n8n) ===== */
+  #n8n-toggle{position:fixed;right:24px;bottom:100px;width:64px;height:64px;border-radius:50%;background:var(--dorado);font-size:2rem;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:100;animation:flotar 2.5s ease-in-out infinite}
+  #n8n-toggle .tip{position:absolute;right:74px;top:50%;transform:translateY(-50%);background:#2B2B2B;color:#fff;font-size:.8rem;padding:6px 10px;border-radius:8px;white-space:nowrap;font-weight:600}
+  @keyframes flotar{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  #n8n-chat{bottom:176px}
+  #n8n-chat iframe{flex:1;border:none;width:100%}
+  .n8n-head{background:var(--dorado);color:#3b2600}
+  .n8n-head .av{background:#fff}
+  .n8n-head a{font-size:.75rem;text-decoration:underline;margin-left:auto}
+  .n8n-head .cerrar{margin-left:8px}
 
   @media(max-width:700px){nav ul{display:none}.btn-blanco{margin:10px 0 0}}
 </style>
@@ -98,8 +106,8 @@
   <div class="container">
     <h1>Todo para leer, estudiar y crear, <b>con el sello del Perú</b></h1>
     <p>Libros, textos escolares, útiles y material de oficina con atención cercana y delivery a todo Lima.</p>
-    <button class="btn btn-dorado" onclick="abrirChat()">💬 Habla con nosotros</button>
-    <a class="btn btn-blanco" href="#productos">Ver productos</a>
+    <button class="btn btn-dorado" onclick="abrirChat()">💬 Preguntas frecuentes</button>
+    <button class="btn btn-blanco" onclick="abrirN8n()">🤖 Asistente IA</button>
   </div>
 </section>
 
@@ -146,14 +154,27 @@
 
 <footer>© <span id="anio"></span> Librerías Andinas · Lima, Perú</footer>
 
-<!-- ===== CHATBOT ===== -->
+<!-- ===== CHATBOT IA (n8n) ===== -->
+<button id="n8n-toggle" onclick="toggleN8n()" aria-label="Abrir asistente IA">🤖<span class="tip">¡Pregúntale a la IA!</span></button>
+
+<div id="n8n-chat" class="panel">
+  <div class="chat-head n8n-head">
+    <div class="av">🤖</div>
+    <div><b>Asistente IA</b><small>Librerías Andinas</small></div>
+    <a href="https://angelunmsm.app.n8n.cloud/webhook/a75449dc-2edc-48a0-9fc7-92820e3c18a4/chat" target="_blank" rel="noopener noreferrer">Abrir aparte ↗</a>
+    <button class="cerrar" onclick="toggleN8n()" aria-label="Cerrar">×</button>
+  </div>
+  <iframe id="n8n-frame" title="Asistente IA Librerías Andinas" data-src="https://angelunmsm.app.n8n.cloud/webhook/a75449dc-2edc-48a0-9fc7-92820e3c18a4/chat"></iframe>
+</div>
+
+<!-- ===== CHATBOT FAQ ===== -->
 <button id="chat-toggle" onclick="toggleChat()" aria-label="Abrir chat">💬<span class="badge"></span></button>
 
-<div id="chat">
+<div id="chat" class="panel">
   <div class="chat-head">
     <div class="av">📚</div>
-    <div><b>Andi</b><small>Asistente de Librerías Andinas · En línea</small></div>
-    <button onclick="toggleChat()" aria-label="Cerrar">×</button>
+    <div><b>Andi</b><small>Preguntas frecuentes · En línea</small></div>
+    <button class="cerrar" onclick="toggleChat()" aria-label="Cerrar">×</button>
   </div>
   <div id="mensajes"></div>
   <form class="chat-input" onsubmit="enviarTexto(event)">
@@ -164,7 +185,7 @@
 
 <script>
 /* ============ CONFIGURACIÓN ============ */
-const WHATSAPP = "51948548368";                 // código Perú + número
+const WHATSAPP = "51948548368";
 const CORREO   = "angeljesus.unmsm@gmail.com";
 
 /* ============ 10 PREGUNTAS BÁSICAS ============ */
@@ -194,14 +215,25 @@ const FAQ = [
 const msgs = document.getElementById("mensajes");
 let iniciado = false;
 
+/* ---------- Abrir/cerrar paneles (solo uno a la vez) ---------- */
 function toggleChat(){
-  const c = document.getElementById("chat");
-  c.classList.toggle("abierto");
+  document.getElementById("n8n-chat").classList.remove("abierto");
+  document.getElementById("chat").classList.toggle("abierto");
   document.querySelector("#chat-toggle .badge")?.remove();
   if(!iniciado){ iniciado = true; bienvenida(); }
 }
 function abrirChat(){ if(!document.getElementById("chat").classList.contains("abierto")) toggleChat(); }
 
+function toggleN8n(){
+  const f = document.getElementById("n8n-frame");
+  if(!f.src) f.src = f.dataset.src;   // carga el chat de n8n solo al abrirlo
+  document.getElementById("chat").classList.remove("abierto");
+  document.getElementById("n8n-chat").classList.toggle("abierto");
+  document.querySelector("#n8n-toggle .tip")?.remove();
+}
+function abrirN8n(){ if(!document.getElementById("n8n-chat").classList.contains("abierto")) toggleN8n(); }
+
+/* ---------- Chatbot FAQ ---------- */
 function agregar(texto, tipo="bot"){
   const d = document.createElement("div");
   d.className = "msg " + tipo;
@@ -209,9 +241,7 @@ function agregar(texto, tipo="bot"){
   msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;
 }
-function botDice(texto, luego){
-  setTimeout(()=>{ agregar(texto); if(luego) luego(); }, 450);
-}
+function botDice(texto, luego){ setTimeout(()=>{ agregar(texto); if(luego) luego(); }, 450); }
 function mostrarOpciones(){
   const box = document.createElement("div");
   box.className = "opciones";
@@ -221,6 +251,10 @@ function mostrarOpciones(){
     b.onclick = ()=> responder(i);
     box.appendChild(b);
   });
+  const ia = document.createElement("button");
+  ia.textContent = "🤖 Hablar con el Asistente IA";
+  ia.onclick = abrirN8n;
+  box.appendChild(ia);
   const c = document.createElement("button");
   c.textContent = "🙋 Hablar con un asesor";
   c.onclick = ()=>{ agregar("Quiero hablar con un asesor","user"); pedirDatos(); };
@@ -238,13 +272,11 @@ function responder(i){
     const box = document.createElement("div");
     box.className = "opciones";
     box.innerHTML = '<button>📩 Sí, que me contacten</button><button>📋 Ver preguntas</button>';
-    box.children[0].onclick = pedirDatos;
+    box.children[0].onclick = ()=> pedirDatos();
     box.children[1].onclick = mostrarOpciones;
     msgs.appendChild(box); msgs.scrollTop = msgs.scrollHeight;
   }));
 }
-
-/* Texto libre: busca por palabras clave */
 function normalizar(t){ return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
 function enviarTexto(e){
   e.preventDefault();
@@ -255,10 +287,10 @@ function enviarTexto(e){
   const i = FAQ.findIndex(f => f.k.some(k => n.includes(normalizar(k))));
   if(i >= 0){ botDice(FAQ[i].a, ()=> botDice("¿Te ayudo con algo más?", mostrarOpciones)); }
   else if(/hola|buen/.test(n)){ botDice("¡Hola! 😊 Elige una opción o escribe tu consulta.", mostrarOpciones); }
-  else { botDice("No tengo esa respuesta, pero un asesor puede ayudarte. Déjame tus datos 👇", ()=> pedirDatos(t)); }
+  else { botDice("No tengo esa respuesta, pero nuestro 🤖 Asistente IA o un asesor pueden ayudarte.", mostrarOpciones); }
 }
 
-/* ============ FORMULARIO → WHATSAPP + CORREO ============ */
+/* ---------- Formulario → WhatsApp + Correo ---------- */
 function pedirDatos(consultaPrevia=""){
   const f = document.createElement("form");
   f.className = "form-lead";
@@ -307,7 +339,6 @@ async function enviarCorreo(f){
     agregar("✅ ¡Gracias, " + d.nombre.split(" ")[0] + "! Recibimos tu consulta y te contactaremos pronto.");
     f.remove();
   }catch(err){
-    // Respaldo: abre el cliente de correo del usuario
     const cuerpo = `Nombre: ${d.nombre}\nCelular: ${d.telefono}\nCorreo: ${d.email}\nConsulta: ${d.consulta}`;
     window.location.href = `mailto:${CORREO}?subject=${encodeURIComponent("Consulta – Librerías Andinas")}&body=${encodeURIComponent(cuerpo)}`;
     agregar("Abrimos tu aplicación de correo para completar el envío.");
